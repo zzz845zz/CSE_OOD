@@ -12,14 +12,14 @@ public:
 		name = new char[strlen(name_) + 1];
 		strcpy(name, name_);
 	}
-	Animal(const Animal& a) {//Copy constructor with deep copy
+	Animal(const Animal& a) { // Copy constructor with deep copy
 		age = a.age;
 		name = new char[strlen(a.name) + 1];
 		strcpy(name, a.name);
 		std::cout << "Copy constructor is invoked!!\n";
 	}
 
-	Animal(Animal&& a) noexcept {//Move constructor with Shallow copy
+	Animal(Animal&& a) noexcept { // Move constructor with Shallow copy
 		age = a.age;
 		name = a.name;
 		std::cout << "Move constructor is invoked!!\n";

@@ -13,7 +13,7 @@ class Animal {
 		name = new char[strlen(name_) + 1];
 		strcpy(name, name_);
 	}
-	Animal(const Animal & a) {//Copy constructor with deep copy
+	Animal(const Animal & a) { //Copy constructor with deep copy
 		age = a.age;
 		name = new char[strlen(a.name) + 1];
 		strcpy(name, a.name);
@@ -40,11 +40,11 @@ int main() {
  
 	A.printAnimal();
  
-	std::vector<Animal> vec; //Vector for Animal type
+	std::vector<Animal> vec; // `Vector` for `Animal` type
 	// At this time, capacity of vec is 1
  
 	std::cout << "-----1st push-----\n";
-	vec.push_back(A);   // Insert an Animal object to vec.
+	vec.push_back(A);   // Insert an `Animal` object to vec.
 	std::cout << "-----2nd push-----\n";
 	vec.push_back(A);   // At this time, a new vec(capacity: 2x origin) is created and all items in the original vec are copied to the new vec
 	// At this time, capacity of vec is 2

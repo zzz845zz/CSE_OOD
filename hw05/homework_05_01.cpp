@@ -14,8 +14,9 @@ public:
 	}
 
 	Animal(Animal& a) { //복사 생성자
-		age = a.age;
-		name = a.name;
+        age = a.age;
+        name = new char[strlen(a.name)+1];
+        strcpy(name, a.name);
 	}
 	void changeName(const char* newName) {
 		strcpy(name, newName);

@@ -9,7 +9,7 @@ public:
 		i = 10;
 	}
 };
-int &foo(){
+int foo(){
 	i = 3;
 	A ob;
 	return i;
