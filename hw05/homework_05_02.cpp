@@ -11,7 +11,9 @@ public:
 };
 int foo(){
 	i = 3;
-	A ob;
+	{
+		A ob;
+	}
 	return i;
 }
 int main() {

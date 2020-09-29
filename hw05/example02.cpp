@@ -24,17 +24,19 @@ public:
 		name = a.name;
 		std::cout << "Move constructor is invoked!!\n";
 		a.name = nullptr;
-		// a.age = 5;
 	}
 	~Animal() {
 		// std::cout << "Destructor!!" << std::endl;
 		if (name) {
-			std::cout << "Destructor of moved object!" << std::endl;	
-			delete[] name;
-		} else {
 			std::cout << "Destructor of copied object!" << std::endl;	
 			delete[] name;
+		} else {
+			std::cout << "Destructor of original object who is moved by `Move constructor`!" << std::endl;	
+			// delete[] name;
 		};
+	}
+	void changeAge(int newAge) {
+		age = newAge;
 	}
 	void changeName(const char* newName) {
 		strcpy(name, newName);
@@ -62,8 +64,13 @@ int main() {
 	vec.push_back(A);
 	std::cout << "-----5th push-----\n";
 	vec.push_back(A);
+	std::cout << "-----6th push-----\n";
+	vec.push_back(A);
 
 	A.printAnimal();
+	A.changeAge(5);
+	A.printAnimal();
+	vec[0].changeName("wow");
 	vec[0].printAnimal();
 	vec[1].printAnimal();
 	vec[2].printAnimal();

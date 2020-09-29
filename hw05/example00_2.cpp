@@ -11,13 +11,13 @@ class A{
 int foo(){
     i= 3;
     A ob;
-    // <-- when calling `foo` defined as `foo()`, Is `A` destructed at this time ?
+    // <-- when calling `foo` defined as `&foo()`, `A` is destructed before return `i`
     return i;
+    // <-- when calling `foo` defined as `foo()`, `A` is destructed after return `i`
 }
 
 int main(){
     cout << foo() <<endl;
-    // <-- when calling `foo` defined as `&foo()`, Is `A` destructed at this time (after return) ?
 
     cout << i <<endl;
 
