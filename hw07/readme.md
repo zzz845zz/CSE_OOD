@@ -7,7 +7,7 @@
 
 ## Example
 - 01 : ***Stack unwinding***  
-It means that just flow of the exception until finding `catch`.  
+It means that flow of the exception until finding proper `catch` without using Call Stack.   
 If it can't find `catch`, then call `terminate()`
 
 ## Homework
