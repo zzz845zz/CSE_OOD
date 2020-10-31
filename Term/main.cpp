@@ -4,6 +4,8 @@
 #include <vector>
 #include <iterator>
 #include <string.h>
+#include <memory>
+#include <cassert>
 
 using namespace std;
 
@@ -15,54 +17,114 @@ const size_t LEFT = 4;
 const size_t BYTE_LIMIT_PER_LINE = 75;
 const size_t BYTE_LIMIT_PER_LINETEXT = BYTE_LIMIT_PER_LINE - LEFT;
 
+enum Command {
+    INSERT,
+    DELETE,
+    SEARCH,
+    CHANGE,
+    TERMINATE,
+    NEXT_PAGE,
+    PREVIOUS_PAGE,
+    UNDEFINED,
+};
+
 class Line {
     private:
-        string _str;
+        string _buf;
         string _overflowed;
+
+        bool fillBuf() {
+            if (_buf.size() <= BYTE_LIMIT_PER_LINETEXT) {
+                return false;
+            }
+            
+            size_t found = _buf.rfind(" ");
+            if (found == string::npos) {
+                throw std::out_of_range("Each word must be smaller than {} bytes!");
+            }
+
+            while (found > BYTE_LIMIT_PER_LINETEXT) { found = _buf.rfind(" ", found-1); }
+
+            string overflowed = _buf.substr(found);
+            _buf.erase(found);
+            _overflowed.append(overflowed);
+            return true;
+        }
 
     public:
         Line(string str) {
             append(str);
         }
 
-        void append(string str) {
-            _str.append(str);
-            if (_str.size() <= BYTE_LIMIT_PER_LINETEXT) {
-                cout << "enough!" << endl;
-                return;
+        bool isFresh() {
+            if (_buf.size() > BYTE_LIMIT_PER_LINETEXT || _overflowed.size() != 0) {
+                return false;
             }
-            
-            size_t found = _str.rfind(" ");
-            if (found == string::npos) {
-                cout<< "no!!" << endl;
-                throw std::out_of_range("Each word must be smaller than 75 bytes!");
-            }
-
-            while (found > BYTE_LIMIT_PER_LINETEXT) {
-                found = _str.rfind(" ", found-1);
-            }
-
-            string overflowed = _str.substr(found);
-            _str.erase(found);
-            // _str = _str.substr(0, found);
-            _overflowed.append(overflowed);
-
-            // if (_str.size() > BYTE_LIMIT_PER_LINETEXT) {
-            //     cout << _str.size() << endl;
-            //     throw std::out_of_range("Each word must be smaller than 75 bytes!");
-            // }
+            return true;
         }
 
+        // return: appended size
+        size_t append(string str) {
+            size_t size_original = _buf.size();
+
+            _buf.append(str);
+            this->fillBuf();
+
+            size_t size_result = _buf.size();
+            return size_result - size_original;
+        }
+
+        void insert(size_t index, string word) {
+            size_t size_original = _buf.size();
+
+            size_t found = -1;
+            for(int i=0; i<index; ++i) { 
+                found = _buf.find(" ", found+1); 
+            }
+            
+            if (found == string::npos) { throw std::out_of_range("'n'th word does not exist!"); }
+            this->_buf.insert(found, word+" ");
+
+            this->fillBuf();
+        }
+
+        // Flush remained overflowed string
         string flush() {
-            string ret = _overflowed;
+            string debris = _overflowed;
             _overflowed = "";
+            return debris;
+        }
+
+        // Fill buffer with the overflowed string
+        void alignSelf() {
+            string overflowed = this->flush();     
+            this->append(overflowed);
+        }
+
+        void alignWith(Line otherLine) {
+            this->alignSelf();
+
+            string str_otherLine = otherLine.clear();
+            this->append(str_otherLine);
+
+            string overflowed = this->flush();
+            otherLine.append(overflowed);
+        }
+
+        string clear() {
+            string ret = this->_buf + this->_overflowed;
+            this->_buf = "";
+            this->_overflowed = "";
             return ret;
         }
 
-        void show() {
-            cout << _str << " --> len: " << _str.size() << endl;
+        string getStr() {
+            return this->_buf;
         }
 
+        size_t size() {
+            return this->_buf.size();
+        }
 };
 
 class TextEditor {
@@ -71,6 +133,44 @@ class TextEditor {
         vector<Line> lines;   // TODO: How about just vector<string> instead of vector<Line>?
         size_t lineIndexFrom; // First line index that shown by editor 
         size_t lineIndexTo;   // Last line index that shown by editor
+
+        bool isFresh() {
+            for(vector<Line>::iterator it = lines.begin();  it != lines.end(); ++it) {
+                if(!(*it).isFresh()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        size_t addNewLine(string texts) {
+            assert(this->isFresh());
+            size_t aa = 0;
+            string buffer = texts;
+            while (buffer != "") {
+                Line newLine(buffer);
+                lines.push_back(newLine);
+                buffer = newLine.flush();
+
+                ++aa;
+            }
+            return aa;
+        }
+
+        void refresh(int from=0) {
+            assert(from < lines.size());
+
+            vector<Line>::iterator it = lines.begin()+from;
+            vector<Line>::iterator end = lines.end()-1;
+
+            while (it != end) {
+                (*it).alignWith(*(it+1));
+                ++it;
+            }
+
+            string overflowed = (*it).flush();
+            this->addNewLine(overflowed);
+        }
 
     public:
         TextEditor() {
@@ -102,7 +202,7 @@ class TextEditor {
             // Extract Lines
             int i = 0;
             while (buffer != "") {
-                std::cout << " Generate line " << i++ << std::endl;
+                // std::cout << " Generate line " << i++ << std::endl;
 
                 Line newLine(buffer);
                 lines.push_back(newLine);
@@ -118,7 +218,9 @@ class TextEditor {
 		}
 
         // Push the word to the next line recursively.
-        void insert(uint_fast32_t lineNumber, uint_fast8_t wordNumber, string str) {
+        void insert(size_t lineNumber, size_t wordNumber, string word) {
+            lines[lineNumber].insert(wordNumber, word);
+            refresh(lineNumber);
         };
 
         // Pull the word to the previous line recursively.
@@ -152,15 +254,67 @@ class TextEditor {
 
             size_t line_num = 1;
             while (it != end) {
-                cout << line_num++ << "| ";
-                (*it).show();
+                printf("%2d| %s --- len: %d\n", line_num++, (*it).getStr().c_str(), (*it).size());
                 ++it;
             }
         }
 };
 
 
-class IO {
+class UserInterface {
+        void printText() {
+
+        }
+        void printMenu() {
+
+        }
+        void printConsole() {
+
+        }
+        void printInputPrompt() {
+
+        }
+        Command interpretCommand(string input) {
+            string arguments = input.substr(1, input.size());
+            switch(input.at(0)) 
+            {
+                case 'i': // INSERT
+                    break;
+                case 'd': // DELETE
+                    break;
+                case 's': // SEARCH
+                    break;
+                case 'c': // CHANGE
+                    break;
+                case 't': // TERMINATE
+                    ;
+                case 'n': // NEXT_PAGE
+                    break;
+                case 'p': // PREVIOUS_PAGE
+                    break;
+                default:
+                    return UNDEFINED;
+            }
+        }
+
+        void executeCommand(Command command) {
+
+        }
+    public:
+        void printEditor() {
+            printText();
+            printMenu();
+            printConsole();
+            printInputPrompt();
+        }
+
+        string inputCommand() {
+            string input;
+            cout << "입력: ";
+            cin >> input;
+            return input;
+        }
+
 
 };
 
@@ -174,5 +328,6 @@ int main() {
     catch (std::exception& e) {
         std::cout << "Exception: " << e.what() << std::endl;
     }
+    cout << "Finish" << endl;
 	return 0;
 }
