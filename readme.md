@@ -20,3 +20,7 @@
 
 ### week8  
 -  Design pattern - ***Singleton, Strategy***
+
+### week9
+- ***static or dynamic binding***  (`virtual`)
+- Execution order of constructor and destructor when using multiple inheritance
