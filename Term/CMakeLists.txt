@@ -5,7 +5,7 @@ include(CTest)
 include_directories("${CMAKE_SOURCE_DIR}/include")
 enable_testing()
 
-add_executable(TextEditor main.cpp src/Line.cpp src/Editor.cpp src/Interface.cpp)
+add_executable(TextEditor main.cpp src/Line.cpp src/Editor.cpp src/Interface.cpp src/CommandIntepreter.cpp)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

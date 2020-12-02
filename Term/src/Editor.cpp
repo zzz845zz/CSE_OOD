@@ -81,7 +81,7 @@ void Editor::showPage() {
 
     size_t line_num = 1;
     while (it != end) {
-        printf("%2d| %s --- len: %d\n", line_num++, (*it).getStr().c_str(), (*it).size());
+        printf("%2d| %s --- len: %d\n", line_num++, (*it).get_text().c_str(), (*it).get_size());
         ++it;
     }
 }

@@ -19,7 +19,12 @@ class Line {
         string _buf;
         string _overflowed;
 
-        bool fillBuf() {
+        /** Fill own buffer using own overflowed string
+         *  e.g.  
+         *      before      buf:abc___       ,   of:dheee
+         *      after       buf:abcdhe       ,  of:ee
+         * */
+        bool fill_buf() {
             if (_buf.size() <= BYTE_LIMIT_PER_LINETEXT) {
                 return false;
             }
@@ -43,7 +48,8 @@ class Line {
         bool isFresh();
 
         // return: appended size
-        size_t append(string str);
+        size_t append_back(string str);
+        size_t append_front(string str);
 
         void insert(size_t index, string word);
 
@@ -51,13 +57,12 @@ class Line {
         string flush();
 
         // Fill buffer with the overflowed string
-        void alignSelf();
-        void alignWith(Line otherLine);
+        void align_self();
+        void align_with(Line otherLine);
 
         string clear();
-        string getStr();
-
-        size_t size();
+        string get_text();
+        size_t get_size();
 };
 
 #endif
