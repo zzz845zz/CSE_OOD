@@ -3,3 +3,6 @@
 Latex/
 *.docx
 *.pdf
+
+build
+bin
