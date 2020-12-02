@@ -76,18 +76,18 @@ class Editor {
         // Push the word to the next line recursively.
         void insert(size_t lineNumber, size_t wordNumber, string word);
         // Pull the word to the previous line recursively.
-        void deleteWord(uint_fast32_t lineNumber, uint_fast8_t wordNumber);
+        void delete_word(uint_fast32_t lineNumber, uint_fast8_t wordNumber);
         // Change `lineIndexFrom`, `lineIndexTo`
         void search(string targetStr);
         // Pushed or Pull the word recursively.
-        void change(string src, string dest);
+        void replace(string src, string dest);
         // Save file and terminate.
         void terminate();
 
         // If editor can display 'last subset of current page + next page' at once, then do so. 
-        void nextPage();
-        void previousPage();
-        void showPage();
+        void move_to_next_page();
+        void move_to_previous_page();
+        void show_current_page();
 };
 
 #endif

@@ -17,6 +17,7 @@ enum ArgumentType {
 struct Argument {
     ArgumentType type;
     string value;
+    ~Argument() { delete(this); };
 };
 
 // Command
@@ -24,7 +25,7 @@ enum CommandType {
     INSERT,         // I-TYPE   e.g. i(1,10,hello)
     DELETE,         // I-TYPE   e.g. d(2,10)
     SEARCH,         // S-TYPE   e.g. s(hello)
-    CHANGE,         // S-TYPE   e.g. c(hello,bye)
+    REPLACE,        // S-TYPE   e.g. r(hello,bye)
     TERMINATE,      // No args  e.g. t
     NEXT_PAGE,      // No args  e.g. n
     PREVIOUS_PAGE,  // No args  e.g. p
@@ -36,13 +37,15 @@ enum CommandType {
 };
 
 struct CommandArgs_ITYPE {
-    int i0;
-    int i1;
+    size_t i0;
+    size_t i1;
     string s2_option;
+    ~CommandArgs_ITYPE() { delete(this); };
 };
 struct CommandArgs_STYPE {
     string s0;
     string s1_option;
+    ~CommandArgs_STYPE() { delete(this); };
 };
 union CommandArgs {
     CommandArgs_ITYPE args_itype;
@@ -55,6 +58,8 @@ union CommandArgs {
 struct Command {
     CommandType ctype;
     CommandArgs& args;
+
+    ~Command() { delete(this); };
 };
 
 // Interpret

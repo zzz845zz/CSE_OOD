@@ -71,7 +71,7 @@ namespace interpret {
                     return size==2 && isItypeCargs(args, size); 
                 case CommandType::SEARCH:   // S-TYPE   e.g. s(hello)
                     return size==1 && isStypeCargs(args, size); 
-                case CommandType::CHANGE:   // S-TYPE   e.g. c(hello,bye)
+                case CommandType::REPLACE:   // S-TYPE   e.g. r(hello,bye)
                     return size==2 && isStypeCargs(args, size); 
                 case CommandType::TERMINATE:    // No args  e.g. t
                     return size==0; 
@@ -83,6 +83,8 @@ namespace interpret {
                     return false;
                 case CommandType::CHANGE_VIEW:  // I-TYPE   e.g. v(20, 30): Change view property to width 20, height 30
                     return size==2 && isItypeCargs(args, size); 
+                case CommandType::CHANGE_FILE:
+                    return size==1 && isStypeCargs(args, size);
             }
         }
 
@@ -113,7 +115,7 @@ namespace interpret {
                         args[0].value,
                     };
                     return cargs;
-                case CommandType::CHANGE:   // S-TYPE   e.g. c(hello,bye)
+                case CommandType::REPLACE:   // S-TYPE   e.g. r(hello,bye)
                     cargs.args_stype = {
                         args[0].value,
                         args[1].value,
@@ -123,6 +125,11 @@ namespace interpret {
                     cargs.args_itype = {
                         util::toDigit(args[0].value),
                         util::toDigit(args[1].value),
+                    };
+                    return cargs;
+                case CommandType::CHANGE_FILE:
+                    cargs.args_stype = {
+                        args[0].value,
                     };
                     return cargs;
                 default:
@@ -139,8 +146,8 @@ namespace interpret {
                     return CommandType::DELETE;
                 case 's': // SEARCH
                     return CommandType::SEARCH;
-                case 'c': // CHANGE
-                    return CommandType::CHANGE;
+                case 'r': // REPLACE
+                    return CommandType::REPLACE;
                 case 't': // TERMINATE
                     return CommandType::TERMINATE;
                 case 'n': // NEXT_PAGE
@@ -162,6 +169,7 @@ namespace interpret {
 
         CommandType ctype = extractCommand(input.at(0));
         CommandArgs& cargs = extractCargs(ctype, args);
-        return Command {ctype, cargs};
+        Command cmd = {ctype, cargs};
+        return cmd;
     }
 }

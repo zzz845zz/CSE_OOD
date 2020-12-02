@@ -51,7 +51,7 @@ void Editor::insert(size_t lineNumber, size_t wordNumber, string word) {
 };
 
 // Pull the word to the previous line recursively.
-void Editor::deleteWord(uint_fast32_t lineNumber, uint_fast8_t wordNumber) {
+void Editor::delete_word(uint_fast32_t lineNumber, uint_fast8_t wordNumber) {
 }
 
 // Change `lineIndexFrom`, `lineIndexTo`
@@ -59,7 +59,7 @@ void Editor::search(string targetStr) {
 }
 
 // Pushed or Pull the word recursively.
-void Editor::change(string src, string dest) {
+void Editor::replace(string src, string dest) {
 
 }
 
@@ -68,13 +68,13 @@ void Editor::terminate() {
 }
 
 // If editor can display 'last subset of current page + next page' at once, then do so. 
-void Editor::nextPage() {
+void Editor::move_to_next_page() {
 }
 
-void Editor::previousPage() {
+void Editor::move_to_previous_page() {
 }
 
-void Editor::showPage() {
+void Editor::show_current_page() {
     cout << "len: " << lines.size() << endl;
     vector<Line>::iterator it = lines.begin() + lineIndexFrom;
     vector<Line>::iterator end = lines.begin() + min(lines.size(), lineIndexTo);
