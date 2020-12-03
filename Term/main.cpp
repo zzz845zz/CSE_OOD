@@ -18,45 +18,38 @@ using namespace interpret;
 const string TARGET_FILE = "/home/seungminjeon/Desktop/study/CSE_OOD/Term/data/test.txt";
 
 
-string execute_command(Command cmd, Editor& e) {
+bool execute_command(Command& cmd, Editor& e) {
     size_t num0, num1;
     string word0, word1;
     switch(cmd.ctype)
     {
         case INSERT:   // I-TYPE   e.g. i(1,10,hello)
-            num0 = cmd.args.args_itype.i0;          // index of line
-            num1 = cmd.args.args_itype.i1;          // index of word
-            word0 = cmd.args.args_itype.s2_option;  // new word to insert
-            e.insert(num0, num1, word0);
-            break;
+            num0 = cmd.args->args_itype.i0;          // index of line
+            num1 = cmd.args->args_itype.i1;          // index of word
+            word0 = cmd.args->args_itype.s2_option;  // new word to insert
+            return e.insert(num0, num1, word0);
 
         case DELETE:   // I-TYPE   e.g. d(2,10)
-            num0 = cmd.args.args_itype.i0;          // index of line
-            num1 = cmd.args.args_itype.i1;          // index of word
-            e.delete_word(num0, num1);
-            break;
+            num0 = cmd.args->args_itype.i0;          // index of line
+            num1 = cmd.args->args_itype.i1;          // index of word
+            return e.delete_word(num0, num1);
             
         case SEARCH:   // S-TYPE   e.g. s(hello)
-            word0 = cmd.args.args_stype.s0;         // word to search
-            e.search(word0);
-            break;
+            word0 = cmd.args->args_stype.s0;         // word to search
+            return e.search(word0);
 
         case REPLACE:   // S-TYPE   e.g. r(hello,bye)
-            word0 = cmd.args.args_stype.s0;         // src
-            word1 = cmd.args.args_stype.s1_option;  // dest
-            e.replace(word0, word1);
-            break;
+            word0 = cmd.args->args_stype.s0;         // src
+            word1 = cmd.args->args_stype.s1_option;  // dest
+            return e.replace(word0, word1);
 
         case TERMINATE:    // No args  e.g. t
-            e.terminate();
-            return "Terminate";
+            return e.terminate();
 
         case NEXT_PAGE:    // No args  e.g. n
-            e.move_to_next_page();
-            break;
+            return e.move_to_next_page();
         case PREVIOUS_PAGE:// No args  e.g. p
-            e.move_to_previous_page();
-            break;
+            return e.move_to_previous_page();
 
         case CHANGE_VIEW:  // I-TYPE   e.g. v(20, 30): Change view property to width 20, height 30
         case CHANGE_FILE:
@@ -66,7 +59,7 @@ string execute_command(Command cmd, Editor& e) {
     }
     
     //  TODO: console message
-    return "Success execution!";
+    return false;
 }
 
 int main() {
@@ -85,15 +78,21 @@ int main() {
 
                 input = UI::input();
                 Command cmd = interpretInput(input);
-                console_msg = execute_command(cmd, t);
 
-                if (console_msg.compare("Terminate")==0) {
+                if (execute_command(cmd, t)) {
+                    console_msg = input +" success";
+                } else {
+                    console_msg = input +" failed";
+                }
+
+                if (cmd.ctype == TERMINATE) {
+                    cout << "Terminated!" << endl;
                     break;
                 }
             }
             catch (invalid_argument& e) {
                 // cout << "Exception: " << e.what() << endl;
-                console_msg = "Invalid input: "+input;
+                console_msg = "Invalid input: "+input + "    <--- err msg: "+ e.what();
             }
         }
     }

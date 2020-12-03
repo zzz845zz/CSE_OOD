@@ -10,6 +10,7 @@ Little console text editor...
 
 ### Exception handling
 - Input: `n gre`
+- Input: `i(1,2,wo)`
 - TODOTODO..
 
 

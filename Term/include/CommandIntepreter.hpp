@@ -17,7 +17,7 @@ enum ArgumentType {
 struct Argument {
     ArgumentType type;
     string value;
-    ~Argument() { delete(this); };
+    ~Argument() {};
 };
 
 // Command
@@ -40,26 +40,26 @@ struct CommandArgs_ITYPE {
     size_t i0;
     size_t i1;
     string s2_option;
-    ~CommandArgs_ITYPE() { delete(this); };
+    ~CommandArgs_ITYPE() {};
 };
 struct CommandArgs_STYPE {
     string s0;
     string s1_option;
-    ~CommandArgs_STYPE() { delete(this); };
+    ~CommandArgs_STYPE() {};
 };
 union CommandArgs {
     CommandArgs_ITYPE args_itype;
     CommandArgs_STYPE args_stype;
 
-    // CommandArgs() { memset( this, 0, sizeof( CommandArgs ) );
-    ~CommandArgs() { delete(this); };
+    CommandArgs() { memset( this, 0, sizeof( CommandArgs )); };
+    ~CommandArgs() {};
 };
 
 struct Command {
     CommandType ctype;
-    CommandArgs& args;
+    CommandArgs* args;
 
-    ~Command() { delete(this); };
+    ~Command() { delete(args); };
 };
 
 // Interpret

@@ -45,36 +45,39 @@ Editor::~Editor() {
 }
 
 // Push the word to the next line recursively.
-void Editor::insert(size_t lineNumber, size_t wordNumber, string word) {
+bool Editor::insert(size_t lineNumber, size_t wordNumber, string word) {
     lines[lineNumber].insert(wordNumber, word);
     refresh(lineNumber);
 };
 
 // Pull the word to the previous line recursively.
-void Editor::delete_word(uint_fast32_t lineNumber, uint_fast8_t wordNumber) {
+bool Editor::delete_word(uint_fast32_t lineNumber, uint_fast8_t wordNumber) {
 }
 
 // Change `lineIndexFrom`, `lineIndexTo`
-void Editor::search(string targetStr) {
+bool Editor::search(string targetStr) {
 }
 
 // Pushed or Pull the word recursively.
-void Editor::replace(string src, string dest) {
-
+bool Editor::replace(string src, string dest) {
+    return true;
 }
 
 // Save file and terminate.
-void Editor::terminate() {
+bool Editor::terminate() {
+    return true;
 }
 
 // If editor can display 'last subset of current page + next page' at once, then do so. 
-void Editor::move_to_next_page() {
+bool Editor::move_to_next_page() {
+    return true;
 }
 
-void Editor::move_to_previous_page() {
+bool Editor::move_to_previous_page() {
+    return true;
 }
 
-void Editor::show_current_page() {
+bool Editor::show_current_page() {
     cout << "len: " << lines.size() << endl;
     vector<Line>::iterator it = lines.begin() + lineIndexFrom;
     vector<Line>::iterator end = lines.begin() + min(lines.size(), lineIndexTo);
@@ -84,4 +87,5 @@ void Editor::show_current_page() {
         printf("%2d| %s --- len: %d\n", line_num++, (*it).get_text().c_str(), (*it).get_size());
         ++it;
     }
+    return true;
 }
