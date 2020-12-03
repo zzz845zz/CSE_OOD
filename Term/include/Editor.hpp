@@ -11,6 +11,8 @@
 #include <cassert>
 
 #include <Line.hpp>
+// #include <Util.hpp>
+// #include <MyUtil.hpp>
 
 using namespace std;
 
@@ -68,15 +70,23 @@ class Editor {
             this->addNewLine(overflowed);
         }
 
+        void move_page(size_t target_start_line) {
+            if (target_start_line < 0 || target_start_line >= lines.size()) {
+                throw out_of_range(" can't move to page that start with line number " + target_start_line);
+            }
+            lineIndexFrom = target_start_line;
+            lineIndexTo = min(lineIndexFrom+20, lines.size());
+        }
+
     public:
         Editor();
         Editor(string filepath);
         ~Editor();
 
         // Push the word to the next line recursively.
-        bool insert(size_t lineNumber, size_t wordNumber, string word);
+        bool insert(size_t line_num, size_t word_num, string word);
         // Pull the word to the previous line recursively.
-        bool delete_word(uint_fast32_t lineNumber, uint_fast8_t wordNumber);
+        bool delete_word(size_t line_num, size_t word_num);
         // Change `lineIndexFrom`, `lineIndexTo`
         bool search(string targetStr);
         // Pushed or Pull the word recursively.

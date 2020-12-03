@@ -33,7 +33,7 @@ namespace interpret {
                 pos = input_args.find(ARG_DELIMITER);
                 token = input_args.substr(0, pos);   // "arg1" from "arg1,arg2,..."
 
-                if (util::isDigit(token)) {
+                if (util::is_digit(token)) {
                     args.push_back(Argument{INTEGER, token});
                 } else {
                     args.push_back(Argument{STRING, token});
@@ -95,7 +95,6 @@ namespace interpret {
                 throw invalid_argument("Arguments doesn't matched for its command type");
             }
 
-            // union CommandArgs cargs = { 0 };
             union CommandArgs* cargs = new CommandArgs;
 
             switch(ctype)
@@ -105,8 +104,8 @@ namespace interpret {
                     cargs->args_itype.s2_option = args[2].value;
                 case CommandType::DELETE:       // I-TYPE   e.g. d(2,10)
                 case CommandType::CHANGE_VIEW:  // I-TYPE   e.g. v(20, 30): Change view property to width 20, height 30
-                    cargs->args_itype.i0 = util::toDigit(args[0].value);
-                    cargs->args_itype.i1 = util::toDigit(args[1].value);
+                    cargs->args_itype.i0 = util::to_digit(args[0].value);
+                    cargs->args_itype.i1 = util::to_digit(args[1].value);
                     return cargs;
                 case CommandType::REPLACE:      // S-TYPE   e.g. r(hello,bye)
                     cargs->args_stype.s1_option = args[1].value;

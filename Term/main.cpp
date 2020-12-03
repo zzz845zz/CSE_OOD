@@ -66,10 +66,7 @@ int main() {
     try {
         // Load text file
         Editor t(TARGET_FILE);
-        // cout << "show pages!" << endl;
-        // t.showPage();
-
-        // Start
+        
         string input;
         string console_msg = "Hi!";
         while (true) {
