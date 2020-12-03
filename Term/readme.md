@@ -9,8 +9,8 @@ Little console text editor...
 - ***Startegy*** for dynamic width/hegiht?
 
 ### Exception handling
-- Input: `n gre`
-- Input: `i(1,2,wo)`
+- <s>Input: `n gre`</s>
+- <s>Input: `i(1,2,wo)`</s>
 - TODOTODO..
 
 ### Validation
