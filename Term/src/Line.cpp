@@ -95,9 +95,9 @@ string Line::delete_word(size_t word_num) {
         throw std::out_of_range("'n'th word does not exist!"); 
     }
     size_t delete_start = found;
-    size_t delete_end = min(_buf.find(WORD_DELIMITER, delete_start), _buf.size());  // `min()`: For the case that the target is last word
+    size_t delete_end = min(_buf.find(WORD_DELIMITER, delete_start+1), _buf.size());  // `min()`: For the case that the target is last word
     
-    string deleted = this->_buf.erase(delete_start, delete_end);
+    string deleted = this->_buf.erase(delete_start, delete_end-delete_start);
     this->fill_buf();
     return deleted;
 }

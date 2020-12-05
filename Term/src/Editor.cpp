@@ -69,7 +69,7 @@ bool Editor::insert(size_t line_num, size_t word_num, string word) {
  * */
 bool Editor::delete_word(size_t line_num, size_t word_num) {
     // TODO: out of index error (If line_num <= 0)
-    lines[line_num-1].delete_word(word_num);
+    lines[line_num-1].delete_word(word_num-1);
     refresh(line_num-1);
     return true;
 }
@@ -166,4 +166,16 @@ bool Editor::show_current_page() {
         ++it;
     }
     return true;
+}
+
+bool Editor::write(string filepath) {
+    string texts = "";
+    for(auto it = lines.begin(); it!=lines.end(); ++it) {
+        texts += (*it).clear();
+    }
+
+    ofstream write_file;
+    write_file.open(filepath);
+    write_file.write(texts.c_str(), texts.size());
+    write_file.close();
 }

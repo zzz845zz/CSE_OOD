@@ -14,7 +14,8 @@
 
 using namespace std;
 
-const string TARGET_FILE = "/home/seungminjeon/Desktop/study/CSE_OOD/Term/data/test.txt";
+const string FILE_READ = "/home/seungminjeon/Desktop/study/CSE_OOD/Term/data/test.txt";
+const string FILE_WRITE = "/home/seungminjeon/Desktop/study/CSE_OOD/Term/data/test_write.txt";
 
 
 bool execute_command(Command* cmd, Editor& e) {
@@ -66,20 +67,21 @@ bool execute_command(Command* cmd, Editor& e) {
 int main() {
     try {
         // Load text file
-        Editor t(TARGET_FILE);
+        Editor editor(FILE_READ);
         
         string input;
         string console_msg = "Hi!";
         while (true) {
             try {
-                UI::printInterface(t, console_msg);
+                UI::printInterface(editor, console_msg);
 
                 input = UI::input();
                 Command* cmd = CommandIntepreter::instance()->interptret_input(input);
 
-                if (execute_command(cmd, t)) {
+                if (execute_command(cmd, editor)) {
                     console_msg = input +" success";
                     if (cmd->ctype == TERMINATE) {
+                        editor.write(FILE_WRITE);
                         cout << "Terminated!" << endl;
                         break;
                     }

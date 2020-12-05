@@ -20,6 +20,7 @@ Little console text editor...
 ### Exception handling
 - <s>Input: `n gre`</s>
 - <s>Input: `i(1,2,wo)`</s>
+- Input: `d(1,)
 - TODOTODO..
 
 ### Validation

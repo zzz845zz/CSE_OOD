@@ -93,11 +93,12 @@ class Editor {
         bool replace(string src, string dest);
         // Save file and terminate.
         bool terminate();
-
         // If editor can display 'last subset of current page + next page' at once, then do so. 
         bool move_to_next_page();
         bool move_to_previous_page();
+
         bool show_current_page();
+        bool write(string filepath);
 };
 
 #endif
