@@ -3,16 +3,11 @@
 
 #include <fstream>
 #include <iostream>
-#include <string>
 #include <vector>
-#include <iterator>
-#include <string.h>
-#include <memory>
 #include <cassert>
 
 #include <Line.hpp>
-// #include <Util.hpp>
-// #include <MyUtil.hpp>
+#include <Config.hpp>
 
 using namespace std;
 
@@ -75,7 +70,7 @@ class Editor {
                 throw out_of_range(" can't move to page that start with line number " + target_start_line);
             }
             lineIndexFrom = target_start_line;
-            lineIndexTo = min(lineIndexFrom+20, lines.size());
+            lineIndexTo = min(lineIndexFrom+LINE_LIMIT_PER_PAGE, lines.size());
         }
 
     public:

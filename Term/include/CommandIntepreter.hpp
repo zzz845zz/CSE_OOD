@@ -1,16 +1,14 @@
 #ifndef COMMAND_INTEPRETER_H
 #define COMMAND_INTEPRETER_H
 
-#include <stdio.h>
-#include <iostream>
 #include <vector>
 #include <memory.h>
 #include <unordered_map>
+
 #include <Util.hpp>
+#include <Config.hpp>
 
 using namespace std;
-
-const char ARG_DELIMITER = ','; 
 
 // Argument
 enum ArgumentType {
@@ -141,7 +139,7 @@ class CommandIntepreter {
             switch(ctype)
             {
                 case CommandType::INSERT:   // I-TYPE   e.g. i(1,10,hello)
-                    return size==3 && is_itype_cargs(args, size);
+                    return size==3 && is_itype_cargs(args, size) && args[2].value.size() <= BYTE_LIMIT_PER_LINE;
                 case CommandType::DELETE:   // I-TYPE   e.g. d(2,10)
                     return size==2 && is_itype_cargs(args, size); 
                 case CommandType::SEARCH:   // S-TYPE   e.g. s(hello)
@@ -201,11 +199,10 @@ class CommandIntepreter {
         }
 
         Command* get_command_ptr(char symbol) {
-            try {
-                return cmd_map[symbol];
-            } catch (out_of_range e) {
-                throw(e.what() + ' command' + symbol + 'undefined');
-            };
+            Command* ptr = cmd_map[symbol];
+            if (ptr==nullptr)
+                throw invalid_argument("There is no command with that symbol");
+            return ptr;
         }
 
     public:

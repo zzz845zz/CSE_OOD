@@ -20,20 +20,23 @@ Little console text editor...
 ### Exception handling
 - <s>Input: `n gre`</s>
 - <s>Input: `i(1,2,wo)`</s>
-- Input: `d(1,)
+- <s>Input: `d(1,)`</s>
+- <s>Input: `d(0,0)`</s>
+- <s>Input: `d(1,55)`</s>
+- <s>Input: `i(1,10,hellohellohellohellohellohellohellohellohellohellohellohellohellohellohellohello)`</s>
+- <s>Input: d(1,1)</s>
+- <s>Input: d(1,2)</s>
+- <s>Input: i(0,1,0)</s>
+- <s>Input: i(1,1,30)</s>
 - TODOTODO..
 
 ### Validation
 - Line invariant
 
 # Log
-- 12/3 in progress: make&execute ok
-- 12/4 in progress: ...
-
-
-
-
-
+- 12/3: make&execute ok
+- 12/4: ...
+- 12/6: OK..? except design pattern?
 
 
 # MEMO

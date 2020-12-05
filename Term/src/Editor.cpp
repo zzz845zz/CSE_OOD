@@ -37,7 +37,7 @@ Editor::Editor(string filepath) {
 
     }
     lineIndexFrom = 0;
-    lineIndexTo = 20;
+    lineIndexTo = LINE_LIMIT_PER_PAGE;
 }
 
 Editor::~Editor() {
@@ -55,6 +55,12 @@ Editor::~Editor() {
  * */
 bool Editor::insert(size_t line_num, size_t word_num, string word) {
     // TODO: out of index error (If line_num <= 0)
+    if (line_num < 1 || word_num < 1) {
+        throw out_of_range("Line and word number should larger than 0.");
+    }
+    if (line_num > lines.size()) {
+        throw out_of_range("The line number you entered does not exist");
+    }
     lines[line_num-1].insert(word_num, word);
     refresh(line_num-1);
     return true;
@@ -68,8 +74,14 @@ bool Editor::insert(size_t line_num, size_t word_num, string word) {
  * 
  * */
 bool Editor::delete_word(size_t line_num, size_t word_num) {
-    // TODO: out of index error (If line_num <= 0)
-    lines[line_num-1].delete_word(word_num-1);
+    // TODO: out of index error (If line_num < 1)
+    if (line_num < 1 || word_num < 1) {
+        throw out_of_range("Line and word number should larger than 0.");
+    }
+    if (line_num > lines.size()) {
+        throw out_of_range("The line number you entered does not exist");
+    }
+    lines[line_num-1].delete_word(word_num);
     refresh(line_num-1);
     return true;
 }
@@ -129,8 +141,8 @@ bool Editor::terminate() {
  * 
  * */
 bool Editor::move_to_next_page() {
-    lineIndexTo = min(lines.size(), lineIndexTo+20);
-    lineIndexFrom = max(0, (int)(lineIndexTo-20));
+    lineIndexTo = min(lines.size(), lineIndexTo + LINE_LIMIT_PER_PAGE);
+    lineIndexFrom = max(0, (int)(lineIndexTo - LINE_LIMIT_PER_PAGE));
     return true;
 }
 
@@ -142,8 +154,8 @@ bool Editor::move_to_next_page() {
  * 
  * */
 bool Editor::move_to_previous_page() {
-    lineIndexFrom = max(0, (int)(lineIndexFrom-20));
-    lineIndexTo = min(lines.size(), lineIndexFrom+20);
+    lineIndexFrom = max(0, (int)(lineIndexFrom - LINE_LIMIT_PER_PAGE));
+    lineIndexTo = min(lines.size(), lineIndexFrom + LINE_LIMIT_PER_PAGE);
     return true;
 }
 
@@ -156,13 +168,13 @@ bool Editor::move_to_previous_page() {
  * */
 bool Editor::show_current_page() {
     printf("\n\n\n");
-    printf("(Line %d~%d / %d)\n", lineIndexFrom, lineIndexTo-1, lines.size()-1);
+    printf("(Line %d~%d / %d)\n", lineIndexFrom+1, lineIndexTo, lines.size());
     vector<Line>::iterator it = lines.begin() + lineIndexFrom;
     vector<Line>::iterator end = lines.begin() + min(lines.size(), lineIndexTo);
 
-    size_t line_num = lineIndexFrom;
+    size_t line_num = lineIndexFrom+1;
     while (it != end) {
-        printf("%2d| %-71s --- len: %d\n", line_num++, (*it).get_text().c_str(), (*it).get_size()+LINE_HEADER_SIZE);
+        printf("%2d| %-75s --- len: %d\n", line_num++, (*it).get_text().c_str(), (*it).get_size());
         ++it;
     }
     return true;

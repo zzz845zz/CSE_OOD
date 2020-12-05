@@ -1,20 +1,9 @@
 #ifndef LINE_H
 #define LINE_H
 
-#include <stdio.h>
-#include <string>
-#include <vector>
-#include <string.h>
-#include <memory>
+#include <Config.hpp>
 
 using namespace std;
-
-const size_t LINE_LIMIT_PER_PAGE = 20; 
-const size_t LINE_HEADER_SIZE = 4;
-const size_t BYTE_LIMIT_PER_LINE = 75;
-const size_t BYTE_LIMIT_PER_LINETEXT = BYTE_LIMIT_PER_LINE - LINE_HEADER_SIZE;
-
-const char WORD_DELIMITER = ' '; 
 
 // Conditions for validate
 //  #Line_fresh          : #buf_fresh && #overflowed_flush
@@ -36,7 +25,7 @@ class Line {
          *           #buf_fresh  =>  #buf_fresh
          * */
         bool fill_buf() {
-            if (_buf.size() <= BYTE_LIMIT_PER_LINETEXT) {
+            if (_buf.size() <= BYTE_LIMIT_PER_LINE) {
                 return false;
             }
             
@@ -45,8 +34,11 @@ class Line {
                 throw std::out_of_range("Each word must be smaller than {} bytes!");
             }
 
-            while (found > BYTE_LIMIT_PER_LINETEXT) { found = _buf.rfind(" ", found-1); }
+            while (found >= BYTE_LIMIT_PER_LINE) { found = _buf.rfind(" ", found-1); }
 
+            // before:   _buf: "a",  of:" b"
+            // after:    _buf: "a ", of:"b"
+            found = found + 1;
             string overflowed = _buf.substr(found);
             _buf.erase(found);
             _overflowed.append(overflowed);

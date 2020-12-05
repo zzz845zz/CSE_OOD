@@ -1,11 +1,4 @@
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <vector>
-#include <iterator>
-#include <string.h>
 #include <memory>
-#include <cassert>
 
 #include <Line.hpp>
 #include <Editor.hpp>
@@ -91,7 +84,9 @@ int main() {
 
             }
             catch (invalid_argument& e) {
-                // cout << "Exception: " << e.what() << endl;
+                console_msg = "Invalid input: "+input + "    <--- err msg: "+ e.what();
+            }
+            catch (out_of_range& e) {
                 console_msg = "Invalid input: "+input + "    <--- err msg: "+ e.what();
             }
         }

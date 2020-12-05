@@ -1,8 +1,6 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
-#include <stdio.h>
-#include <iostream>
 #include <Editor.hpp>
 
 using namespace std;
