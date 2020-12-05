@@ -24,3 +24,22 @@
 ### week9
 - ***static or dynamic binding***  (`virtual`)
 - Execution order of constructor and destructor when using multiple inheritance
+
+### week10
+- Compile Time
+    + `static_cast`
+- Run Time Type Information
+    + `typeid`
+    + `dynamic_cast`: need `virtual`
+
+- static, dynamic casting
+
+### week12
+- Template
+    + Function, Class template
+    + Specialization
+
+### week13
+- Template
+    + Default parameter
+    + Variadic template
