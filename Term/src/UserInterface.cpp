@@ -12,7 +12,7 @@ namespace UI {
         inline void printMenu() {
             cout << "(n)ext page, (p)revious page, "
                 "(i)nsert word, (d)elete word, (r)eplace words, (s)earch word, "
-                "(v)iew changing, (f)ile changing, (t)erminate after save, "
+                "(t)erminate after save. "
                 << endl;
         };
         inline void printConsole(string msg) {

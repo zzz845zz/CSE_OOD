@@ -7,75 +7,10 @@
 
 #include <Util.hpp>
 #include <Config.hpp>
+#include <command/Command.hpp>
 
 using namespace std;
 
-// Argument
-enum ArgumentType {
-    INTEGER,
-    STRING,
-};
-struct Argument {
-    ArgumentType type;
-    string value;
-    ~Argument() {};
-};
-
-// Command
-enum CommandType {
-    INSERT,         // I-TYPE   e.g. i(1,10,hello)
-    DELETE,         // I-TYPE   e.g. d(2,10)
-    SEARCH,         // S-TYPE   e.g. s(hello)
-    REPLACE,        // S-TYPE   e.g. r(hello,bye)
-    TERMINATE,      // No args  e.g. t
-    NEXT_PAGE,      // No args  e.g. n
-    PREVIOUS_PAGE,  // No args  e.g. p
-    UNDEFINED,      // ..
-
-    ///// custom
-    CHANGE_VIEW,    // I-TYPE   e.g. v(20, 30): Change view property to width 20, height 30
-    CHANGE_FILE,    // S-TYPE   e.g. f(test2.txt)
-};
-
-struct CommandArgsITYPE {
-    size_t i0;
-    size_t i1;
-    string s2_option;
-    ~CommandArgsITYPE() {};
-};
-struct CommandArgsSTYPE {
-    string s0;
-    string s1_option;
-    ~CommandArgsSTYPE() {};
-};
-union CommandArgs {
-    CommandArgsITYPE args_itype;
-    CommandArgsSTYPE args_stype;
-
-    CommandArgs() { memset( this, 0, sizeof( CommandArgs )); };
-    ~CommandArgs() {};
-};
-enum CommandArgsTYPE {
-    I_TYPE,
-    S_TYPE,
-    N_TYPE,
-};
-struct Command {
-    char symbol;
-    CommandType ctype;
-    CommandArgsTYPE cargtype;
-    CommandArgs* cargs;
-
-    Command() {};
-    Command(char _symbol, CommandType _ctype, CommandArgsTYPE _cargtype): symbol(_symbol), ctype(_ctype), cargtype(_cargtype)
-    {
-        cargs = new CommandArgs; 
-    }
-
-    ~Command() { 
-        delete(cargs); 
-    };
-};
 class CommandIntepreter {
     private:
         static CommandIntepreter* s_instance;
@@ -116,52 +51,6 @@ class CommandIntepreter {
             return args;
         }
 
-        bool is_itype_cargs(vector<Argument> args, size_t size) {
-            // s2 can be both integer and string (both "543" and "hi" is ok)
-            // e.g. i(1,10,543) will insert "543"
-            //      i(1,10,hi)  will insert "hi" 
-            if (size==2 || size ==3) {
-                return args.at(0).type==INTEGER && args.at(1).type==INTEGER;
-            } 
-            return false;
-        }
-
-        bool is_stype_cargs(vector<Argument> args, size_t size) {
-            // s0, s1 can be both integer and string (both "543" and "hi" is ok)
-            // e.g. r(1,5) will replace "1" with "5"
-            //      r(hi,3) will replaced "hi" with "3"
-            return size==1 || size==2;
-        }
-
-        bool is_valid_cargs(CommandType ctype, vector<Argument> args) {
-            size_t size = args.size();
-            bool valid = false;
-            switch(ctype)
-            {
-                case CommandType::INSERT:   // I-TYPE   e.g. i(1,10,hello)
-                    return size==3 && is_itype_cargs(args, size) && args[2].value.size() <= BYTE_LIMIT_PER_LINE;
-                case CommandType::DELETE:   // I-TYPE   e.g. d(2,10)
-                    return size==2 && is_itype_cargs(args, size); 
-                case CommandType::SEARCH:   // S-TYPE   e.g. s(hello)
-                    return size==1 && is_stype_cargs(args, size); 
-                case CommandType::REPLACE:   // S-TYPE   e.g. r(hello,bye)
-                    return size==2 && is_stype_cargs(args, size); 
-                case CommandType::TERMINATE:    // No args  e.g. t
-                    return size==0; 
-                case CommandType::NEXT_PAGE:    // No args  e.g. n
-                    return size==0;
-                case CommandType::PREVIOUS_PAGE:// No args  e.g. p
-                    return size==0;
-                case CommandType::UNDEFINED:
-                    return false;
-                case CommandType::CHANGE_VIEW:  // I-TYPE   e.g. v(20, 30): Change view property to width 20, height 30
-                    return size==2 && is_itype_cargs(args, size); 
-                case CommandType::CHANGE_FILE:
-                    return size==1 && is_stype_cargs(args, size);
-            }
-        }
-
-        // Fill dummy to option value
         void fill_dummy_to_option(vector<Argument>& args, CommandArgsTYPE cargtype) {
             size_t size = args.size();
             size_t aligned_size = 0;
@@ -176,8 +65,7 @@ class CommandIntepreter {
         }
 
         void fill_cargs(Command* info, vector<Argument> args) {
-
-            if (!is_valid_cargs(info->ctype, args)) {
+            if (!info->check_args_available(args)) {
                 throw invalid_argument("Arguments doesn't matched for its command type");
             }
 
@@ -209,26 +97,23 @@ class CommandIntepreter {
         CommandIntepreter() {
             // [cargs] in [Command] is empty at the first time.
             // It will be filled in `fill_cargs()` 
-            cmd_map['i'] = new Command ('i', INSERT, I_TYPE);
-            cmd_map['d'] = new Command ('d', DELETE, I_TYPE);
-            cmd_map['s'] = new Command ('s', SEARCH, S_TYPE);
-            cmd_map['r'] = new Command ('r', REPLACE, S_TYPE);
-            cmd_map['t'] = new Command ('t', TERMINATE, N_TYPE);
-            cmd_map['n'] = new Command ('n', NEXT_PAGE, N_TYPE);
-            cmd_map['p'] = new Command ('p', PREVIOUS_PAGE, N_TYPE);
-            cmd_map['v'] = new Command ('v', CHANGE_VIEW, I_TYPE);
-            cmd_map['f'] = new Command ('f', CHANGE_FILE, S_TYPE);
+            vector<Command*> vec;
+            vec.push_back(new CommandInsert());
+            vec.push_back(new CommandDelete());
+            vec.push_back(new CommandSearch());
+            vec.push_back(new CommandReplace());
+            vec.push_back(new CommandTerminate());
+            vec.push_back(new CommandNextPage());
+            vec.push_back(new CommandPreviousPage());
 
-            // To make new command x,
-            // 1. Define command type   : at [CommandType]
-            // 2. Define verification   : at [is_valid_cargs()]
-            // 2. Add to command map    : to [cmd_map] with arguments type (e.g. I_TYPE)
-            // 4. Define action         : at [execute_command()]
+            for (auto it = vec.begin(); it!=vec.end(); ++it) {
+                cmd_map[(*it)->symbol] = *it;
+            }
         }
         ~CommandIntepreter() {
             // Deallocate all [Command] allocated in constructor
             for(auto it = cmd_map.begin(); it!=cmd_map.end(); ++it) {
-                delete(it->second);
+                delete(it->second); // delete value
             }
         }
 

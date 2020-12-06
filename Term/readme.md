@@ -3,9 +3,8 @@ Little console text editor...
   
 ### To make new command,
 ```D
-1. Define command type  : `CommandType` in `CommandIntepreter.hpp`
-2. Define verification  : `is_valid_cargs()` in `CommandIntepreter.hpp`
-3. Add to command map   : `cmd_map` with arguments type (e.g. I_TYPE) in `CommandIntepreter.hpp`
+1. Define command  : in `Command.hpp`
+2. Add to command map   : in constructor of `CommandIntepreter`
 4. Define action        : `execute_command()` in `main.cpp`
 ```
 
@@ -37,6 +36,7 @@ Little console text editor...
 - 12/3: make&execute ok
 - 12/4: ...
 - 12/6: OK..? except design pattern?
+- 12/6: change structure for command.   struct -> class
 
 
 # MEMO

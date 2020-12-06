@@ -43,15 +43,13 @@ bool execute_command(Command* cmd, Editor& e) {
         case REPLACE:   // S-TYPE   e.g. r(hello,bye)
             return e.replace(word0, word1);
         case TERMINATE:    // No args  e.g. t
+            e.write(FILE_WRITE);
             return e.terminate();
         case NEXT_PAGE:    // No args  e.g. n
             return e.move_to_next_page();
         case PREVIOUS_PAGE:// No args  e.g. p
             return e.move_to_previous_page();
-        case CHANGE_VIEW:  // I-TYPE   e.g. v(20, 30): Change view property to width 20, height 30
-        case CHANGE_FILE:
         case UNDEFINED:
-            // TODO 3 state above
             break;
     }
     return false;
@@ -74,7 +72,6 @@ int main() {
                 if (execute_command(cmd, editor)) {
                     console_msg = input +" success";
                     if (cmd->ctype == TERMINATE) {
-                        editor.write(FILE_WRITE);
                         cout << "Terminated!" << endl;
                         break;
                     }
