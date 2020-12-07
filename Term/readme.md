@@ -40,18 +40,21 @@ Little console text editor...
 
 
 # MEMO
-Template for function document
-```C++
-/** 
- * Function description
- * 
- * @param param1 param1 description
- * @return return value description
- * @example
- *           before      buf:_____  ,  of:~
- *           after       buf:_____  ,  of:~
- * @invariant
- *          #pre_condition => #post_condition (TODO)
- * */
-```
+- Is it necessary to distinguish the type by argument of each command? e.g. I-Type, S-type, N-type  
+--> Maybe not.. The instructions use that strategy beacuse of hardware limitations..
+
+- Template for function document
+    ```C++
+    /** 
+     * Function description
+     * 
+     * @param param1 param1 description
+     * @return return value description
+     * @example
+     *           before      buf:_____  ,  of:~
+     *           after       buf:_____  ,  of:~
+     * @invariant
+     *          #pre_condition => #post_condition (TODO)
+     * */
+    ```
 
