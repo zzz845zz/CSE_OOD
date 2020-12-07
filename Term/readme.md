@@ -37,11 +37,13 @@ Little console text editor...
 - 12/4: ...
 - 12/6: OK..? except design pattern?
 - 12/6: change structure for command.   struct -> class
+- 12/7: done?
 
 
 # MEMO
-- Is it necessary to distinguish the type by argument of each command? e.g. I-Type, S-type, N-type  
---> Maybe not.. The instructions use that strategy beacuse of hardware limitations..
+- <s> Is it necessary to distinguish the type by argument of each command? e.g. I-Type, S-type, N-type
+--> Maybe not.. The instructions use that strategy beacuse of hardware limitations. </s>   
+-> 12/7 fixed 
 
 - Template for function document
     ```C++

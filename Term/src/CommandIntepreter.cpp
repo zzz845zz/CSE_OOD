@@ -27,10 +27,16 @@ CommandIntepreter::~CommandIntepreter() {
 }
 
 Command* CommandIntepreter::interptret_input(string input) {
-    Command* cmd = get_command_ptr(input.at(0));
+    Command* cmd = cmd_map[input.at(0)];
+    if (cmd==nullptr)
+        throw invalid_argument("There is no command with that symbol");
 
     vector<Argument> args = parseArguments(input.substr(1, input.size()));
-    fill_cargs(cmd, args);
+    if (!cmd->check_args_available(args)) {
+        throw invalid_argument("Arguments doesn't matched for its command type");
+    }
+
+    cmd->args = args;
     return cmd;
 };
 

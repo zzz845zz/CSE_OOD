@@ -12,36 +12,19 @@ const string FILE_WRITE = "/home/seungminjeon/Desktop/study/CSE_OOD/Term/data/te
 
 
 bool execute_command(Command* cmd, Editor& e) {
-    size_t num0, num1;
-    string word0, word1;
-
-    // Extract argument
-    switch(cmd->cargtype) 
-    {
-        case I_TYPE:
-            num0 = cmd->cargs->args_itype.i0;           // arg0
-            num1 = cmd->cargs->args_itype.i1;           // arg1
-            word0 = cmd->cargs->args_itype.s2_option;   // arg2 (dummy string if it doesn't use option)
-            break;
-        case S_TYPE:
-            word0 = cmd->cargs->args_stype.s0;         // arg0
-            word1 = cmd->cargs->args_stype.s1_option;  // arg1 (dummy string if it doesn't use option)
-            break;
-        case N_TYPE:
-            break;
-    }
+    vector<Argument> args = cmd->args;
 
     // Execute
     switch(cmd->ctype)
     {
-        case INSERT:   // I-TYPE   e.g. i(1,10,hello)
-            return e.insert(num0, num1, word0);
-        case DELETE:   // I-TYPE   e.g. d(2,10)
-            return e.delete_word(num0, num1);
-        case SEARCH:   // S-TYPE   e.g. s(hello)
-            return e.search(word0);
-        case REPLACE:   // S-TYPE   e.g. r(hello,bye)
-            return e.replace(word0, word1);
+        case INSERT:   // e.g. i(1,10,hello)
+            return e.insert(args[0], args[1], args[2]);
+        case DELETE:   // e.g. d(2,10)
+            return e.delete_word(args[0], args[1]);
+        case SEARCH:   // e.g. s(hello)
+            return e.search(args[0]);
+        case REPLACE:   // e.g. r(hello,bye)
+            return e.replace(args[0], args[1]);
         case TERMINATE:    // No args  e.g. t
             e.write(FILE_WRITE);
             return e.terminate();

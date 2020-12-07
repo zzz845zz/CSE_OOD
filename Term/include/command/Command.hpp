@@ -7,13 +7,10 @@ class Command {
     public:
         char symbol;
         CommandType ctype;
-        CommandArgsTYPE cargtype;
-        CommandArgs* cargs;
+        vector<Argument> args;
 
         Command() {};
-        virtual ~Command() { 
-            delete(cargs); 
-        };
+        virtual ~Command() {};
 
         virtual bool check_args_available(vector<Argument> args) = 0;
 };
@@ -24,13 +21,11 @@ class CommandInsert: public Command {
         CommandInsert() {
             symbol = 'i';
             ctype = INSERT;
-            cargtype = I_TYPE;
-            cargs = new CommandArgs;
         };
 
         virtual bool check_args_available(vector<Argument> args) override {
             size_t size = args.size();
-            return size==3 && is_itype_cargs(args, size) && args[2].value.size() <= BYTE_LIMIT_PER_LINE;
+            return size==3 && args[0].type==INTEGER && args[1].type==INTEGER && args[2].size()<=BYTE_LIMIT_PER_LINE;
         };
 };
 
@@ -39,13 +34,11 @@ class CommandDelete: public Command {
         CommandDelete() {
             symbol = 'd';
             ctype = DELETE;
-            cargtype = I_TYPE;
-            cargs = new CommandArgs;
         };
 
         virtual bool check_args_available(vector<Argument> args) override {
             size_t size = args.size();
-            return size==2 && is_itype_cargs(args, size);
+            return size==2 && args[0].type==INTEGER && args[1].type==INTEGER;
         }
 };
 
@@ -55,13 +48,11 @@ class CommandSearch: public Command {
         CommandSearch() {
             symbol = 's';
             ctype = SEARCH;
-            cargtype = S_TYPE;
-            cargs = new CommandArgs;
         };
 
         virtual bool check_args_available(vector<Argument> args) override {
             size_t size = args.size();
-            return size==1 && is_stype_cargs(args, size);
+            return size==1;
         }
 };
 
@@ -71,12 +62,10 @@ class CommandReplace: public Command {
         CommandReplace() {
             symbol = 'r';
             ctype = REPLACE;
-            cargtype = S_TYPE;
-            cargs = new CommandArgs;
         };
         virtual bool check_args_available(vector<Argument> args) override {
             size_t size = args.size();
-            return size==2 && is_stype_cargs(args, size); 
+            return size==2; 
         }
 };
 
@@ -86,8 +75,6 @@ class CommandTerminate: public Command {
         CommandTerminate() {
             symbol = 't';
             ctype = TERMINATE;
-            cargtype = N_TYPE;
-            cargs = new CommandArgs;
         };
 
         virtual bool check_args_available(vector<Argument> args) override {
@@ -102,8 +89,6 @@ class CommandNextPage: public Command {
         CommandNextPage() {
             symbol = 'n';
             ctype = NEXT_PAGE;
-            cargtype = N_TYPE;
-            cargs = new CommandArgs;
         };
 
         virtual bool check_args_available(vector<Argument> args) override {
@@ -118,8 +103,6 @@ class CommandPreviousPage: public Command {
         CommandPreviousPage() {
             symbol = 'p';
             ctype = PREVIOUS_PAGE;
-            cargtype = N_TYPE;
-            cargs = new CommandArgs;
         };
 
         virtual bool check_args_available(vector<Argument> args) override {
@@ -129,29 +112,3 @@ class CommandPreviousPage: public Command {
 };
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// class Builder {
-// public:
-// 	virtual char buildSymbol() = 0;
-// 	virtual CommandType buildCommandType() = 0;
-// 	virtual CommandArgsTYPE buildCommandArgsTYPE() = 0;
-// 	virtual CommandArgs buildCommandArgs() = 0;
-// };
