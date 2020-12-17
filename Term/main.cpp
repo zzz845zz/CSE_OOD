@@ -7,8 +7,8 @@
 
 using namespace std;
 
-const string FILE_READ = "/home/seungminjeon/Desktop/study/CSE_OOD/Term/data/test.txt";
-const string FILE_WRITE = "/home/seungminjeon/Desktop/study/CSE_OOD/Term/data/test_write.txt";
+const string FILE_READ = "./data/test.txt";
+const string FILE_WRITE = "./data/test_write.txt";
 
 
 bool execute_command(Command* cmd, Editor& e) {
